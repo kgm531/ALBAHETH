@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    /* ===== Variables ===== */
+    :root {
+      --main-color: #00bcd4;
+      --secondary-color: #008c9e;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-white: #ffffff;
+      --text-muted: #94a3b8;
+      --transition: all 0.3s ease-in-out;
+    }
+
+    /* ===== Reset & Body ===== */
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Montserrat','Roboto',sans-serif;}
+    body { background-color: var(--bg-primary); color: var(--text-white); overflow-x:hidden; scroll-behavior:smooth; position:relative;}
+    h2.section-title { text-align:center; font-size:46px; font-weight:900; color:#fff; margin-bottom:60px; position:relative; }
+    h2.section-title::after { content:""; position:absolute; left:50%; bottom:-12px; transform:translateX(-50%); width:80px; height:4px; background:linear-gradient(90deg,#00bcd4,#0097a7); border-radius:10px; }
+
+    /* ===== Background Canvas ===== */
+    #timeline-bg { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; }
+
+    /* ===== Header ===== */
+    header{ display:flex; justify-content:space-between; align-items:center; padding:15px 5%; background:rgba(15,23,42,0.9); backdrop-filter:blur(10px); position:fixed; width:100%; top:0; z-index:1000; box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+    .logo-section{ display:flex; align-items:center; gap:15px; }
+    .logo{ font-size:26px; font-weight:bold; color:var(--main-color); text-decoration:none; text-shadow:0 0 10px rgba(0,188,212,0.3);}
+    .nav-buttons{ display:flex; gap:12px; align-items:center; }
+    .btn{ padding:10px 22px; border-radius:8px; font-weight:700; border:none; cursor:pointer; transition:var(--transition);}
+    .btn-login{ border:2px solid var(--main-color); color:var(--main-color); background:transparent;}
+    .btn-login:hover{ background:var(--main-color); color:white; transform:translateY(-3px);}
+    .btn-register{ background:var(--main-color); color:white;}
+    .btn-register:hover{ background:var(--secondary-color); box-shadow:0 5px 15px rgba(0,188,212,0.4); transform:translateY(-3px);}
+    #theme-toggle{ background:none; border:none; font-size:20px; cursor:pointer; color:var(--main-color); margin-right:15px;}
+
+    /* ===== Hero ===== */
+    .hero{ margin-top:90px; width:100%; padding:20px 5%; }
+    .poster-container{ width:100%; border-radius:25px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.05);}
+    .poster-container img{ width:100%; display:block; }
+
+    /* ===== About ===== */
+    .about-wrapper{ display:flex; align-items:center; justify-content:center; gap:60px; flex-wrap:wrap; max-width:1200px; margin:0 auto; }
+    .about-img{ flex:1; min-width:300px; max-width:450px;}
+    .img-frame{ position:relative; border-radius:30px; overflow:hidden; box-shadow:0 25px 50px rgba(0,0,0,0.3);}
+    .img-frame img{ width:100%; display:block; transition: transform 0.5s ease;}
+    .img-frame:hover img{ transform: scale(1.05);}
+    .about-content{ flex:1.5; min-width:300px;}
+    .about-title{ font-size:38px; font-weight:800; font-family: 'Gill Sans', sans-serif; color:var(--main-color); margin-bottom:25px; position:relative; display:inline-block;}
+    .about-title::after{ content:''; position:absolute; bottom:-10px; right:0; width:70px; height:4px; background:var(--main-color); border-radius:2px;}
+    .reveal-text{ font-size:22px; line-height:1.8; color:var(--text-muted); font-weight:500; text-align:justify;}
+    .word{ display:inline-block; opacity:0; transform:translateY(15px); transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin-left:6px;}
+    .word.visible{ opacity:1; transform:translateY(0);}
+    /* About Stats */
+    .about-stats{ display:flex; gap:30px; margin-top:30px; justify-content:space-around; text-align:center;}
+    .stat-card{ background: var(--bg-secondary); padding:20px; border-radius:15px; border:1px solid #334155; transition:var(--transition);}
+    .stat-card:hover{ transform:translateY(-5px); box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+    .stat-card i{ color:var(--main-color); margin-bottom:10px;}
+    .stat-card .count{ display:block; font-size:28px; font-weight:bold; color:var(--text-white);}
+
+    /* ===== Courses ===== */
+    .courses-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:30px; max-width:1200px; margin:0 auto; }
+    .course-card{ background:var(--bg-secondary); border-radius:20px; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,0.3); border:1px solid #334155; transition:var(--transition); display:flex; flex-direction:column;}
+    .course-card:hover{ transform:translateY(-10px); border-color:var(--main-color); box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+    .course-image{ position:relative;}
+    .course-image img{ width:100%; height:200px; object-fit:cover;}
+    .badge{ position:absolute; top:10px; left:10px; background:var(--main-color); color:#fff; padding:5px 10px; border-radius:10px; font-size:12px;}
+    .course-content{ padding:25px; text-align:center;}
+    .rating i{ color:#ffc107; margin-right:2px;}
+    .course-btn{ display:inline-block; background:var(--main-color); color:white; padding:12px 25px; border-radius:10px; text-decoration:none; font-weight:bold; transition:var(--transition);}
+    .course-btn:hover{ background:var(--secondary-color);}
+    .course-price{ display:block; margin-top:15px; font-size:20px; font-weight:bold; color:var(--main-color);}
+
+    /* ===== Testimonials ===== */
+    .testimonials-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:25px; max-width:1200px; margin:0 auto;}
+    .testimonial-card{ background:var(--bg-secondary); padding:25px; border-radius:20px; border:1px solid #334155; text-align:center; transition:var(--transition);}
+    .testimonial-card:hover{ transform:translateY(-5px); box-shadow:0 15px 35px rgba(0,0,0,0.3);}
+    .testimonial-card .avatar{ width:70px; height:70px; border-radius:50%; background:var(--bg-primary); display:flex; align-items:center; justify-content:center; margin:0 auto 15px auto; border:2px solid var(--main-color); font-size:30px; color:var(--main-color);}
+
+    /* ===== CTA ===== */
+    .cta-section{ background:linear-gradient(90deg,var(--main-color),var(--secondary-color)); color:#fff; padding:60px 5%; text-align:center; border-radius:20px; margin:50px auto; max-width:1200px;}
+    .cta-btn{ font-size:18px; padding:15px 30px; margin-top:20px; display:inline-flex; align-items:center; gap:10px;}
+    .cta-btn:hover{ transform:translateY(-3px); box-shadow:0 10px 25px rgba(0,0,0,0.3); }
+
+    /* ===== Footer ===== */
+    footer{ background:#000; color:#fff; padding:50px 5% 20px; text-align:center;}
+    .social-links{ display:flex; justify-content:center; gap:25px; margin-bottom:30px;}
+    .social-links a{ color:white; font-size:26px; transition:var(--transition);}
+    .social-links a:hover{ color:var(--main-color); transform:translateY(-5px);}
+  </style>
+</head>
+<body>
+
+  <!-- Background Canvas -->
+  <canvas id="timeline-bg"></canvas>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-buttons">
+      <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+      <a href="#" class="btn btn-login">تسجيل دخول</a>
+      <a href="#" class="btn btn-register">حساب جديد</a>
+    </div>
+    <div class="logo-section">
+      <a href="#" class="logo">الباحث </a>
+      <i class="fas fa-landmark fa-2x" style="color: var(--main-color);"></i>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" data-aos="zoom-in">
+    <div class="poster-container">
+      <img src="img/poster2.jpeg" alt="مستر أحمد الضويني">
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about-section">
+    <div class="about-wrapper">
+      <div class="about-img" data-aos="fade-left">
+        <div class="img-frame"><img src="img/img.PNG" alt="مستر أحمد الضويني"></div>
+      </div>
+      <div class="about-content">
+        <h2 class="about-title" data-aos="fade-up">من هو مستر أحمد الضويني؟</h2>
+        <div id="about-text" class="reveal-text">
+          أ / أحمد محمد الضويني مدرس مادة التاريخ للمرحلة الثانوية...
+        </div>
+        <div class="about-stats" data-aos="fade-up">
+          <div class="stat-card"><i class="fas fa-user-graduate fa-2x"></i><span class="count" data-count="1500">0</span><p>طالب مستفيد</p></div>
+          <div class="stat-card"><i class="fas fa-chalkboard-teacher fa-2x"></i><span class="count" data-count="5">0</span><p>سنوات خبرة</p></div>
+          <div class="stat-card"><i class="fas fa-book-open fa-2x"></i><span class="count" data-count="12">0</span><p>كورسات متاحة</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Courses Section -->
+  <section class="courses">
+    <h2 class="section-title">الكورسات المتاحة</h2>
+    <div class="courses-grid">
+      <div class="course-card" data-aos="zoom-in">
+        <div class="course-image"><img src="img/course1.jpg" alt="كورس التأسيس"><span class="badge">الأكثر مبيعًا</span></div>
+        <div class="course-content">
+          <h3>كورس التأسيس في التاريخ</h3>
+          <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i></div>
+          <p>شرح مبسط + خرائط ذهنية + تدريبات تأسيسية قوية.</p>
+          <a href="#" class="course-btn">الدخول للكورس</a>
+          <span class="course-price">199 جنيه</span>
+        </div>
+      </div>
+      <div class="course-card" data-aos="zoom-in" data-aos-delay="100">
+        <div class="course-image"><img src="img/course2.jpg" alt="كورس شهر أكتوبر"></div>
+        <div class="course-content">
+          <h3>كورس شهر أكتوبر</h3>
+          <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></div>
+          <p>شرح كامل لدروس الشهر + امتحانات على كل درس.</p>
+          <a href="#" class="course-btn">الدخول للكورس</a>
+          <span class="course-price">150 جنيه</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <h2 class="section-title">آراء الطلاب</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card" data-aos="fade-up">
+        <div class="avatar"><i class="fas fa-user"></i></div>
+        <p>"أفضل مدرس تاريخ واجهته، الشرح ممتع والفهم سهل."</p>
+        <h4>طالب مجهول</h4>
+      </div>
+      <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="avatar"><i class="fas fa-user"></i></div>
+        <p>"المذكرة والخرائط ساعدتني جدًا في المذاكرة قبل الامتحان."</p>
+        <h4>طالبة مجهولة</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" data-aos="zoom-in">
+    <div class="cta-wrapper">
+      <h2>ابدأ رحلتك مع مستر أحمد الضويني اليوم!</h2>
+      <p>سجل الآن وابدأ التعلم بطريقة ممتعة وفعالة</p>
+      <a href="#" class="btn btn-register cta-btn"><i class="fas fa-rocket"></i> سجل الآن</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fas fa-phone"></i></a>
+    </div>
+    <p>جميع الحقوق محفوظة لمستر أحمد الضويني &copy; 2024</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.2/countUp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    // --- AOS ---
+    AOS.init({ duration: 1000, once:true });
+
+    // --- About Text Reveal ---
+    document.addEventListener("DOMContentLoaded", function() {
+      const textContainer = document.getElementById("about-text");
+      const content = textContainer.innerText;
+      textContainer.innerText = "";
+      const words = content.split(" ");
+      words.forEach(word => {
+          const span = document.createElement("span");
+          span.classList.add("word");
+          span.innerText = word;
+          textContainer.appendChild(span);
+      });
+      const wordSpans = textContainer.querySelectorAll(".word");
+      function showWords() {
+          wordSpans.forEach((span,index)=>{
+              setTimeout(()=>{ span.classList.add("visible"); }, index*150);
+          });
+      }
+      const observer = new IntersectionObserver(entries=>{
+          entries.forEach(entry=>{
+              if(entry.isIntersecting){
+                  showWords();
+                  observer.unobserve(entry.target);
+              }
+          });
+      },{ threshold:0.5 });
+      observer.observe(textContainer);
+    });
+
+    // --- CountUp Stats ---
+    const counters = document.querySelectorAll('.count');
+    counters.forEach(counter => {
+      const updateCounter = () => {
+          const endVal = parseInt(counter.getAttribute('data-count'));
+          const countUp = new CountUp(counter, endVal, { duration:2 });
+          if(!countUp.error) countUp.start();
+      };
+      const obs = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){ updateCounter(); obs.unobserve(entry.target); }
+        });
+      }, { threshold:0.5 });
+      obs.observe(counter);
+    });
+
+    // --- Dark/Light Mode ---
+    const themeBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    const icon = themeBtn.querySelector('i');
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme){ html.dataset.theme=savedTheme; if(savedTheme==='light'){ icon.classList.replace('fa-moon','fa-sun'); } }
+    themeBtn.addEventListener('click',()=>{
+      if(html.dataset.theme==='light'){ html.dataset.theme=''; localStorage.setItem('theme',''); icon.classList.replace('fa-sun','fa-moon'); }
+      else{ html.dataset.theme='light'; localStorage.setItem('theme','light'); icon.classList.replace('fa-moon','fa-sun'); }
+    });
+
+    // --- Timeline Background Animation ---
+    const canvas = document.getElementById("timeline-bg");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+    const symbols = ['𓀀','𓀁','𓀂','𓀃','𓀄','𓀅']; // Egyptian unicode symbols
+    let particles = [];
+
+    function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+
+    function initParticles(){
+      particles=[];
+      for(let i=0;i<60;i++){
+        particles.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          size: 20+Math.random()*15,
+          speed: 0.2+Math.random()*0.8,
+          symbol: symbols[Math.floor(Math.random()*symbols.length)],
+          opacity:0.2+Math.random()*0.5
+        });
+      }
+    }
+    initParticles();
+
+    function animate(){
+      ctx.clearRect(0,0,W,H);
+      particles.forEach(p=>{
+        ctx.globalAlpha=p.opacity;
+        ctx.font=p.size+"px 'Courier New', monospace";
+        ctx.fillStyle="rgba(0,188,212,0.6)";
+        ctx.fillText(p.symbol,p.x,p.y);
+        p.y -= p.speed;
+        if(p.y<-50){ p.y=H+50; p.x=Math.random()*W; p.opacity=0.2+Math.random()*0.5;}
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS Style --- */
+        :root {
+            --main-color: #00bcd4; /* التركواز الأساسي */
+            --gold-color: #d4af37; /* لون ذهبي للمسات التاريخية */
+            --bg-dark: #0f172a;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --text-white: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* خلفية موحية بالتاريخ (ورق قديم) */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/old-map.png'); /* نقوش خريطة قديمة */
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2); /* إطار بلمحة ذهبية */
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 188, 212, 0.05);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* اللوجو التاريخي (ريشة ومحبرة) */
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--bg-dark), #1e293b);
+            border: 2px solid var(--gold-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--gold-color);
+            font-size: 28px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--main-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .logo-area h1 {
+            color: var(--text-white);
+            font-size: 26px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .logo-area p {
+            color: var(--main-color);
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        /* تنسيق الحقول */
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 50px 16px 15px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--main-color);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .input-group input:focus + i {
+            color: var(--main-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+
+        .remember-me { color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .forgot-pass { color: var(--gold-color); text-decoration: none; }
+
+        /* زر الدخول */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--main-color)); /* تدرج لوني */
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 188, 212, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .footer-links { margin-top: 30px; color: var(--text-muted); font-size: 14px; }
+        .footer-links a { color: var(--main-color); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <h1>مرحباً بك يا باحث</h1>
+                <p>منصة مستر أحمد الضويني التاريخية</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                    <input type="text" id="studentName" placeholder="اسم الطالب الثلاثي" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-scroll"></i>
+                    <input type="password" id="studentCode" placeholder="كود الطالب السري" required>
+                </div>
+
+                <div class="options">
+                    <label class="remember-me">
+                        <input type="checkbox"> حفظ البيانات
+                    </label>
+                    <a href="#" class="forgot-pass">فقدت الكود؟</a>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    استكشف التاريخ الآن <i class="fa-solid fa-shuttle-space"></i>
+                </button>
+            </form>
+
+            <div class="footer-links">
+                <p>طالب جديد؟ <a href="signup.html">سجل حسابك هنا</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        /* --- JS Code --- */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#00bcd4", "#d4af37"] }, // مزيج التركواز والذهبي
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": { 
+                    "enable": true, 
+                    "distance": 150, 
+                    "color": "#00bcd4", 
+                    "opacity": 0.1, 
+                    "width": 1 
+                },
+                "move": { 
+                    "enable": true, 
+                    "speed": 1.5, 
+                    "direction": "top", /* الجزيئات تصعد للأعلى كالغبار في الضوء */
+                    "random": true, 
+                    "straight": false, 
+                    "out_mode": "out" 
+                }
+            },
+            "interactivity": {
+                "events": { "onhover": { "enable": true, "mode": "bubble" } },
+                "modes": { "bubble": { "distance": 200, "size": 4, "duration": 2, "opacity": 0.8 } }
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('.login-btn');
+            btn.innerHTML = 'جاري فتح السجلات... <i class="fa-solid fa-hourglass-start fa-spin"></i>';
+            
+            setTimeout(() => {
+                alert('تم التحقق من الهوية بنجاح!');
+                // window.location.href = "dashboard.html"; 
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
